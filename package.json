@@ -1,0 +1,26 @@
+{
+  "name": "sir-transformalot",
+  "version": "0.0.0",
+  "description": "Transform data between versions",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape test/*-test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/e-conomic/sir-transformalot.git"
+  },
+  "keywords": [
+    "versions",
+    "transform"
+  ],
+  "author": "e-conomic",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/e-conomic/sir-transformalot/issues"
+  },
+  "homepage": "https://github.com/e-conomic/sir-transformalot",
+  "devDependencies": {
+    "tape": "^3.0.1"
+  }
+}
