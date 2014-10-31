@@ -2,7 +2,7 @@ var test = require('tape');
 var get = require('./testUtil').get;
 
 test('get endpoint v1', function(t) {
-	t.plan(1);
+	t.plan(3);
 	get('/endpoint/v1', function(err, resp, body) {
 		t.false(err, 'should not have error');
 		t.equals(resp.statusCode, 200, 'statusCode of response');
