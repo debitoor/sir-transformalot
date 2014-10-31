@@ -1,6 +1,61 @@
 var test = require('tape');
+var createPatches = require('./utils/create-patch');
+var sir = require('../index');
 
-test('state the obvious', function(t) {
-	t.plan(1);
-	t.equals(true, true, 'it stated the obvious');
+test('transform upwards', function(t) {
+	var transform = sir(createPatches([
+		{
+			version: 'v2',
+			up: function(data, context) {
+				data.v2 = true;
+			}
+		},
+		{
+			version: 'v3',
+			up: function(data, context) {
+				data.v3 = true;
+			}
+		}
+	]));
+
+	t.plan(3);
+
+	transform.up('v1', function(err, transformer) {
+		t.deepEquals(transformer({}), {v2: true, v3: true});
+	});
+	transform.up('v2', function(err, transformer) {
+		t.deepEquals(transformer({}), {v3: true});
+	});
+	transform.up('v3', function(err, transformer) {
+		t.deepEquals(transformer({}), {});
+	});
+});
+
+test('transform downwards', function(t) {
+	var transform = sir(createPatches([
+		{
+			version: 'v2',
+			down: function(data, context) {
+				data.v2 = true;
+			}
+		},
+		{
+			version: 'v3',
+			down: function(data, context) {
+				data.v3 = true;
+			}
+		}
+	]));
+
+	t.plan(3);
+
+	transform.down('v3', function(err, transformer) {
+		t.deepEquals(transformer({}), {}, 'vest');
+	});
+	transform.down('v2', function(err, transformer) {
+		t.deepEquals(transformer({}), {v3: true}, 'fest');
+	});
+	transform.down('v1', function(err, transformer) {
+		t.deepEquals(transformer({}), {v3: true, v2: true}, 'test');
+	});
 });
