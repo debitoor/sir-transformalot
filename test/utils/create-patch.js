@@ -31,4 +31,4 @@ module.exports = function(templates, omits) {
 		});
 		return patch;
 	});
-}
+};

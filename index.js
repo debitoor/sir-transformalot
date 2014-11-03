@@ -54,7 +54,7 @@ function transform(transforms) {
 				});
 			});
 		}
-	}
+	};
 }
 
 module.exports = transform;
