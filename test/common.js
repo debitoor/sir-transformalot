@@ -24,7 +24,7 @@ global.getHttpFunction = function (methodType, headers) {
 			};
 		}
 		if (!/^https?:\/\//.test(url)) {
-			url = '127.0.0.1' + 'api/v1.0/' + url;
+			url = 'http://127.0.0.1:8893/' + url;
 		}
 		var location = new Error().stack.split('\n')[2];
 		return request[methodType]({
