@@ -1,3 +1,6 @@
+var get = global.getHttpFunction('get', {});
+var post = global.getHttpFunction('post', {});
+
 describe('integration tests', function () {
 	ensureApp();
 
