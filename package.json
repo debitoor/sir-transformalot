@@ -12,7 +12,8 @@
   },
   "keywords": [
     "versions",
-    "transform"
+    "transform",
+    "api"
   ],
   "author": "e-conomic",
   "license": "MIT",
@@ -21,7 +22,10 @@
   },
   "homepage": "https://github.com/e-conomic/sir-transformalot",
   "devDependencies": {
-    "tape": "^3.0.1"
+    "chai": "^1.9.2",
+    "mocha": "^2.0.1",
+    "mocha-jshint": "0.0.9",
+    "mocha-teamcity-reporter": "0.0.4"
   },
   "dependencies": {
     "after-all": "^2.0.1",
