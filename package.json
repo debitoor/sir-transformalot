@@ -23,6 +23,7 @@
   "homepage": "https://github.com/e-conomic/sir-transformalot",
   "devDependencies": {
     "chai": "^1.9.2",
+    "express": "^4.10.1",
     "mocha": "^2.0.1",
     "mocha-jshint": "0.0.9",
     "mocha-teamcity-reporter": "0.0.4",
@@ -30,6 +31,7 @@
   },
   "dependencies": {
     "after-all": "^2.0.1",
+    "attempt": "^1.0.0",
     "lodash": "^2.4.1",
     "xtend": "^4.0.0"
   }
