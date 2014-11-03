@@ -8,7 +8,9 @@ function transform(transforms) {
 	transforms = versions.removeExpired(transforms);
 	transforms = versions.sort(transforms);
 
-	var latestVersion = transforms[transforms.length - 1].version;
+	if (transforms.length) {
+		var latestVersion = transforms[transforms.length - 1].version;
+	}
 
 	return {
 		up: function(target, callback) {

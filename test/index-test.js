@@ -59,3 +59,11 @@ test('transform downwards', function(t) {
 		t.deepEquals(transformer({}), {v3: true, v2: true}, 'test');
 	});
 });
+
+test('when dealing with no patches', function(t) {
+	var transform = sir([]);
+	transform.up('v1', function(err, transformer) {
+		t.deepEquals(transformer({foo: 'bar'}), {foo: 'bar'}, 'should return the input verbatim');
+		t.end();
+	});
+});
