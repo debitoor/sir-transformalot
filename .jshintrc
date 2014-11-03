@@ -1,4 +1,16 @@
 {
+	"predef": [
+		"after",
+		"afterEach",
+		"before",
+		"beforeEach",
+		"describe",
+		"expect",
+		"it",
+		"xit",
+		"bodyReturned",
+		"ensureApp"
+	],
 	"asi" : false,
 	"bitwise" : true,
 	"boss" : false,
