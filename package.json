@@ -22,5 +22,9 @@
   "homepage": "https://github.com/e-conomic/sir-transformalot",
   "devDependencies": {
     "tape": "^3.0.1"
+  },
+  "dependencies": {
+    "after-all": "^2.0.1",
+    "xtend": "^4.0.0"
   }
 }
