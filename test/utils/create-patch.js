@@ -21,8 +21,7 @@ module.exports = function(templates, omits) {
 		},
 		docs: {
 			message: 'n/a'
-		},
-		expires: undefined // new Date(something) if it should expire
+		}
 	};
 
 	return templates.map(function(patch) {

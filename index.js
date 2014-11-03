@@ -5,7 +5,6 @@ function transform(transforms) {
 	if (!Array.isArray(transforms)) {
 		throw new Error('transforms should be an array');
 	}
-	transforms = versions.removeExpired(transforms);
 	transforms = versions.sort(transforms);
 
 	if (transforms.length) {
@@ -19,7 +18,7 @@ function transform(transforms) {
 
 			// initialize a transformation range and return a transformation
 			// function that can do the actual transformation on data
-			patches.initializeAll(versions.removeExpired(range), function(err, context) {
+			patches.initializeAll(range, function(err, context) {
 				if (err) {
 					return callback(err);
 				}
@@ -40,7 +39,7 @@ function transform(transforms) {
 
 			// initialize a transformation range and return a transformation
 			// function that can do the actual transformation on data
-			patches.initializeAll(versions.removeExpired(range), function(err, context) {
+			patches.initializeAll(range, function(err, context) {
 				if (err) {
 					return callback(err);
 				}

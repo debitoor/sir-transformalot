@@ -42,34 +42,3 @@ test('version sorter', function(t) {
 	);
 	t.end();
 });
-
-test('versions with expiration dates', function(t) {
-	var thisYear = (new Date()).getFullYear();
-	var transforms = createPatches([
-		// expired in the past
-		{version: 'v1', expires: new Date(thisYear - 2,1,1,0,0,0)},
-		{version: 'v2', expires: new Date(thisYear - 1, 1,1,0,0,0)},
-		// expires now
-		{version: 'v3', expires: new Date()},
-		// expires in the future
-		{version: 'v4', expires: new Date(thisYear + 1, 1,1,0,0,0)}
-	], ['initialize']);
-
-	t.deepEquals(
-		versions.removeExpired(transforms).map(getVersions),
-		['v4'],
-		'should filter out expired versions'
-	);
-	t.end();
-});
-
-test('versions without expiration dates', function(t) {
-	var transforms = createPatches({version: 'v1'}, ['expires']);
-
-	t.deepEquals(
-		versions.removeExpired(transforms).map(getVersions),
-		['v1'],
-		'should not filter out versions with no expiration date'
-	);
-	t.end();
-});
