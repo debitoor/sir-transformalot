@@ -6,8 +6,6 @@ var pluck = require('./utils/pluck');
 var getVersions = require('./utils/pluck')('version');
 
 test('get correct version range', function(t) {
-	t.plan(3);
-
 	var transforms = createPatches([
 		{version: 'v1'}, {version: 'v2'}, {version: 'v3'}, {version: 'v4'}, {version: 'v5'}
 	], ['initialize']);
@@ -29,11 +27,10 @@ test('get correct version range', function(t) {
 		[],
 		'should not do anything if `from` and `to` versions are the same'
 	);
+	t.end();
 });
 
 test('version sorter', function(t) {
-	t.plan(1);
-
 	var transforms = createPatches([
 		{version: 'v2'}, {version: 'v3'}, {version: 'v1'}
 	], ['initialize']);
@@ -43,6 +40,7 @@ test('version sorter', function(t) {
 		['v1', 'v2', 'v3'],
 		'should sort versions in ascending order'
 	);
+	t.end();
 });
 
 test('versions with expiration dates', function(t) {
@@ -56,24 +54,22 @@ test('versions with expiration dates', function(t) {
 		// expires in the future
 		{version: 'v4', expires: new Date(thisYear + 1, 1,1,0,0,0)}
 	], ['initialize']);
-	
-	t.plan(1);
-	
+
 	t.deepEquals(
 		versions.removeExpired(transforms).map(getVersions),
 		['v4'],
 		'should filter out expired versions'
 	);
+	t.end();
 });
 
 test('versions without expiration dates', function(t) {
 	var transforms = createPatches({version: 'v1'}, ['expires']);
-	
-	t.plan(1);
-	
+
 	t.deepEquals(
 		versions.removeExpired(transforms).map(getVersions),
 		['v1'],
 		'should not filter out versions with no expiration date'
 	);
+	t.end();
 });
