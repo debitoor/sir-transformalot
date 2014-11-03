@@ -19,7 +19,7 @@ function transform(transforms) {
 
 			// initialize a transformation range and return a transformation
 			// function that can do the actual transformation on data
-			patches.initializeAll(range, function(err, context) {
+			patches.initializeAll(versions.removeExpired(range), function(err, context) {
 				if (err) {
 					return callback(err);
 				}
@@ -40,7 +40,7 @@ function transform(transforms) {
 
 			// initialize a transformation range and return a transformation
 			// function that can do the actual transformation on data
-			patches.initializeAll(range, function(err, context) {
+			patches.initializeAll(versions.removeExpired(range), function(err, context) {
 				if (err) {
 					return callback(err);
 				}
