@@ -17,9 +17,9 @@ var data = [
 
 module.exports = {
 	getEntityById: function(id) {
-		return _.find(data, function(el) {return el.id === id});
+		return _.find(data, function(el) {return el.id === id;});
 	},
 	getDataStream: function() {
-		return es.readArray(data).pipe(JSONStream.stringify())
+		return es.readArray(data).pipe(JSONStream.stringify());
 	}
 };

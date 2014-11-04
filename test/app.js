@@ -1,9 +1,11 @@
 var express = require('express');
 var http = require('http');
+var db = require('./utils/db');
+var bodyParser = require('body-parser');
+
 var app = express();
 var server = http.createServer(app);
-
-var db = require('./utils/db');
+app.use(bodyParser.json());
 
 app.get('/ping', function(req, res) {
 	return res.json({
@@ -21,6 +23,12 @@ app.get('/entities/:version', function(req, res) {
 });
 
 app.post('/entity/:version', function(req, res) {
+	if(req.params.version !== (req.body.version + '')) {
+		res.statusCode = 400;
+		return res.json({
+			msg: 'data format mismatch'
+		});
+	}
 	return res.json({
 		status: 'ok'
 	});
