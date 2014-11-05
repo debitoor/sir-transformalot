@@ -33,7 +33,7 @@ function transformFactory(transforms) {
 				});
 			});
 		},
-		down: function(target, callback) {
+		downgradeData: function(target, callback) {
 			// "go down from latest version to target"
 			var range = versions.range(transforms, latestVersion, target);
 
@@ -48,7 +48,7 @@ function transformFactory(transforms) {
 						throw new Error('Called with no data');
 					}
 					range.forEach(function(patch) {
-						patch.down(data, context);
+						patch.downgradeData(data, context);
 					});
 					return data;
 				});

@@ -13,7 +13,7 @@ module.exports = function(templates, omits) {
 			var err;
 			done(err, context);
 		},
-		up: function(data, context) {
+		upgradeData: function(data, context) {
 			return data;
 		},
 		downgradeData: function(data, context) {

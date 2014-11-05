@@ -1,7 +1,7 @@
 var createPatches = require('../utils/create-patch');
 var sir = require('../../index');
 
-describe('unAndDown module test', function() {
+describe('upAndDown module test', function() {
 	var transform, result;
 
 	describe('transformFactory upwards', function() {
@@ -42,7 +42,7 @@ describe('unAndDown module test', function() {
 
 	describe('transformFactory downwards', function() {
 		before(function(){
-			result = sir(createPatches([
+			transform = sir(createPatches([
 				{
 					version: 'v2',
 					downgradeData: function(data, context) {
@@ -67,7 +67,7 @@ describe('unAndDown module test', function() {
 		cases.forEach(function(oneCase) {
 			describe(oneCase[0], function() {
 				before(function (done) {
-					transform.upgradeData(oneCase[0], function(err, transformer) {
+					transform.downgradeData(oneCase[0], function(err, transformer) {
 						result = transformer({});
 						done();
 					});
