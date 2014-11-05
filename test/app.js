@@ -13,9 +13,33 @@ app.get('/ping', function(req, res) {
 	});
 });
 
-app.get('/entity/:id/:version', function(req, res) {
-	return res.json(db.getEntityById(parseInt(req.params.id)));
+var entityConfig = {
+	v2: {V1toV2: {transform: function(){}, initialize: function(){}}, V2toV1: function(){}, initialize: function(){}},
+	v3: {V2toV3: {transform: function(){}, initialize: function(){}}, V3toV2: function(){}, initialize: function(){}}
+};
+var patchSystem = transformalot.init(entityConfig);
+
+//Andrii's version
+app.get('/entity/:id/:versionTo', function(req, res) {
+	var dataV2 = db.getEntityById(parseInt(req.params.id));
+	var endVersionData = patchSystem.downgrade(dataV2, req.params.version);
+	return res.json(endVersionData);
 });
+
+//Allan's version
+function getData(version) {
+	return function(req,res) {
+		var version = getVersionFromURL(req.url);
+		var dataV2 = db.getEntityById(parseInt(req.params.id));
+		var patch = tansformalot.entity({from: 'v2', to: version});
+		return res.json(patch(dataV2));
+	}
+}
+
+app.get('/entity/:id/v3', getData());
+app.get('/entity/:id/v2', getData());
+app.get('/entity/:id/v1', getData());
+/////////////////////////
 
 app.get('/entities/:version', function(req, res) {
 	res.header('content-type', 'application/json; charset=utf-8');
