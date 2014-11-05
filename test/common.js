@@ -25,7 +25,7 @@ global.ensureApp = function() {
 			if (err) {
 				console.log("failed to start app. Attempts: 5");
 			}
-			console.log('App is up and running!');
+			console.log('App is upgradeData and running!');
 			return done(err, results);
 		});
 	});

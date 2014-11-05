@@ -4,18 +4,18 @@ var sir = require('../../index');
 describe('unAndDown module test', function() {
 	var transform, result;
 
-	describe('transform upwards', function() {
+	describe('transformFactory upwards', function() {
 		before(function () {
 			transform = sir(createPatches([
 				{
 					version: 'v2',
-					up: function(data, context) {
+					upgradeData: function(data, context) {
 						data.v2 = true;
 					}
 				},
 				{
 					version: 'v3',
-					up: function(data, context) {
+					upgradeData: function(data, context) {
 						data.v3 = true;
 					}
 				}
@@ -27,7 +27,7 @@ describe('unAndDown module test', function() {
 		cases.forEach(function(oneCase) {
 			describe(oneCase[0], function() {
 				before(function (done) {
-					transform.up(oneCase[0], function(err, transformer) {
+					transform.upgradeData(oneCase[0], function(err, transformer) {
 						result = transformer({});
 						done();
 					});
@@ -40,18 +40,18 @@ describe('unAndDown module test', function() {
 		});
 	});
 
-	describe('transform downwards', function(t) {
+	describe('transformFactory downwards', function() {
 		before(function(){
 			result = sir(createPatches([
 				{
 					version: 'v2',
-					down: function(data, context) {
+					downgradeData: function(data, context) {
 						data.v2 = true;
 					}
 				},
 				{
 					version: 'v3',
-					down: function(data, context) {
+					downgradeData: function(data, context) {
 						data.v3 = true;
 					}
 				}
@@ -67,7 +67,7 @@ describe('unAndDown module test', function() {
 		cases.forEach(function(oneCase) {
 			describe(oneCase[0], function() {
 				before(function (done) {
-					transform.up(oneCase[0], function(err, transformer) {
+					transform.upgradeData(oneCase[0], function(err, transformer) {
 						result = transformer({});
 						done();
 					});
@@ -80,10 +80,10 @@ describe('unAndDown module test', function() {
 		});
 	});
 
-	describe('when dealing with no patches', function(t) {
+	describe('when dealing with no patches', function() {
 		before(function(done) {
 			transform = sir([]);
-			transform.up('v1', function(err, transformer) {
+			transform.upgradeData('v1', function(err, transformer) {
 				result = transformer({foo: 'bar'});
 				done();
 			});

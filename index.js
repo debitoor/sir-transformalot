@@ -1,7 +1,7 @@
 var versions = require('./lib/versions');
 var patches = require('./lib/patch');
 
-function transform(transforms) {
+function transformFactory(transforms) {
 	if (!Array.isArray(transforms)) {
 		throw new Error('transforms should be an array');
 	}
@@ -12,7 +12,7 @@ function transform(transforms) {
 	}
 
 	return {
-		up: function(target, callback) {
+		upgradeData: function(target, callback) {
 			// "go up from target to latest version"
 			var range = versions.range(transforms, target, latestVersion);
 
@@ -27,7 +27,7 @@ function transform(transforms) {
 						throw new Error('Called with no data');
 					}
 					range.forEach(function(patch) {
-						patch.up(data, context);
+						patch.upgradeData(data, context);
 					});
 					return data;
 				});
@@ -57,4 +57,4 @@ function transform(transforms) {
 	};
 }
 
-module.exports = transform;
+module.exports = transformFactory;

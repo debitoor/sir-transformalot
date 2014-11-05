@@ -16,7 +16,7 @@ module.exports = function(templates, omits) {
 		up: function(data, context) {
 			return data;
 		},
-		down: function(data, context) {
+		downgradeData: function(data, context) {
 			return data;
 		},
 		docs: {

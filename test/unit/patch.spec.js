@@ -4,7 +4,7 @@ var createPatches = require('./../utils/create-patch');
 describe('lib/patch', function () {
 	var transforms, context, err;
 
-	describe('initializing transform', function(t) {
+	describe('initializing transformFactory', function() {
 		before(function (done) {
 			transforms = createPatches([
 				{initialize: function(context, done){ done(); }}
@@ -27,7 +27,7 @@ describe('lib/patch', function () {
 
 	});
 
-	describe('initializing transform returning errors', function(t) {
+	describe('initializing transformFactory returning errors', function() {
 
 		before(function (done) {
 			transforms = createPatches([
