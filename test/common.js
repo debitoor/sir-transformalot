@@ -14,7 +14,7 @@ global.ensureApp = function() {
 			return done();
 		}
 
-		require('./app');
+		require('./testApp/app');
 		attempt({
 			interval: 300,
 			retries: 4
@@ -25,7 +25,7 @@ global.ensureApp = function() {
 			if (err) {
 				console.log("failed to start app. Attempts: 5");
 			}
-			console.log('App is upgradeData and running!');
+			console.log('App is up and running!');
 			return done(err, results);
 		});
 	});
