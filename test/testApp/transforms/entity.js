@@ -5,8 +5,17 @@ var entityConfig = {
 				data.dataVersion = 2;
 				return data;
 			},
-			initialize: function() {
+			initialize: function(callback) {
+				var asyncDataFromDb = {
+					1: {
+						dataFromInitForV1toV2: 'yeap'
+					},
+					2: {
+						dataFromInitForV1toV2: 'nice'
+					}
+				};
 
+				return callback(null, asyncDataFromDb);
 			}
 		},
 		V2toV1: {
@@ -31,6 +40,8 @@ var entityConfig = {
 		V3toV2: {
 			transform: function(data) {
 				data.dataVersion = 2;
+				delete data.fieldFromV3;
+				return data;
 			},
 			initialize: function( ) {
 
@@ -38,4 +49,6 @@ var entityConfig = {
 		}
 	}
 };
-module.exports = entityConfig;
+
+var transformalot = require('../../../index2');
+module.exports = transformalot(entityConfig);

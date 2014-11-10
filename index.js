@@ -1,5 +1,5 @@
 var versions = require('./lib/versions');
-var patches = require('./lib/patch');
+var patches = require('./lib/prepareToTransform');
 
 function transformFactory(transforms) {
 	if (!Array.isArray(transforms)) {

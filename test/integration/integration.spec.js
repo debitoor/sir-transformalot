@@ -21,7 +21,7 @@ describe('integration tests', function () {
 
 			describe('GET v2', function () {
 				before(function (done) {
-					get('entity/1/v1', done);
+					get('entity/1/v2', done);
 				});
 
 				it('should return data v2', function () {

@@ -6,7 +6,6 @@ var app = express();
 var server = http.createServer(app);
 
 var db = require('./db');
-var transformalot = require('../../index2');
 var transforms = require('./transforms');
 
 
@@ -18,12 +17,10 @@ app.get('/ping', function(req, res) {
 	});
 });
 
-var patchEntitySystem = transformalot(transforms.entity);
-
 //Andrii's version
-app.get('/entity/:id/:version', function(req, res) {
-	var dataV2 = db.getEntityById(parseInt(req.params.id));
-	var endVersionData = patchEntitySystem.downgrade(dataV2, req.params.version);
+app.get('/entity/:id/:version(v1|v2|v3)', function(req, res) {
+	var dataV3 = db.getEntityById(parseInt(req.params.id));
+	var endVersionData = transforms.entity.downgradeData(dataV3, 'v3', req.params.version);
 	return res.json(endVersionData);
 });
 
@@ -36,17 +33,13 @@ function getData() {
 		return res.json(patch(dataV2));
 	};
 }
-
-app.get('/entity/:id/v3', getData());
-app.get('/entity/:id/v2', getData());
-app.get('/entity/:id/v1', getData());
 /////////////////////////
 
-app.get('/entities/:version', function(req, res) {
-	res.header('content-type', 'application/json; charset=utf-8');
-
-	return db.getDataStream({transform: patchEntitySystem.getTransform}).pipe(res);
-});
+//app.get('/entities/:version(v1|v2|v3)', function(req, res) {
+//	res.header('content-type', 'application/json; charset=utf-8');
+//
+//	return db.getDataStream({transform: transforms.entity.downgradeData()}).pipe(res);
+//});
 
 function dummyVersionValidator(req, res, next) {
 	if(req.params.version !== (req.body.version + '')) {
