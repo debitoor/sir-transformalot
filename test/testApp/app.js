@@ -35,11 +35,11 @@ function getData() {
 }
 /////////////////////////
 
-//app.get('/entities/:version(v1|v2|v3)', function(req, res) {
-//	res.header('content-type', 'application/json; charset=utf-8');
-//
-//	return db.getDataStream({transform: transforms.entity.downgradeData()}).pipe(res);
-//});
+app.get('/entities/:version(v1|v2|v3)', function(req, res) {
+	res.header('content-type', 'application/json; charset=utf-8');
+
+	return db.getDataStream({transform: function(){}}).pipe(res);
+});
 
 function dummyVersionValidator(req, res, next) {
 	if(req.params.version !== (req.body.version + '')) {

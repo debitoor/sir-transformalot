@@ -6,42 +6,30 @@ describe('integration tests', function () {
 
 	describe('GET entitys', function () {
 		describe('for singular case', function() {
-			describe('GET v1', function () {
-				before(function (done) {
-					get('entity/1/v1', done);
-				});
+			var testCases = {
+				v1: {
+					dataVersion: 1,
+					id: 1
+				},
+				v2: {
+					dataVersion: 2,
+					id: 1
+				},
+				v3: {
+					dataVersion: 3,
+					id: 1,
+					fieldFromV3: true
+				}
+			};
 
-				it('should return data v1', function () {
-					expect(bodyReturned).to.eql({
-						dataVersion: 1,
-						id: 1
+			['v1', 'v2', 'v3'].forEach(function(version) {
+				describe('GET ' + version, function () {
+					before(function (done) {
+						get('entity/1/' + version, done);
 					});
-				});
-			});
 
-			describe('GET v2', function () {
-				before(function (done) {
-					get('entity/1/v2', done);
-				});
-
-				it('should return data v2', function () {
-					expect(bodyReturned).to.eql({
-						dataVersion: 2,
-						id: 1
-					});
-				});
-			});
-
-			describe('GET v3', function () {
-				before(function (done) {
-					get('entity/1/v3', done);
-				});
-
-				it('should return data v3', function () {
-					expect(bodyReturned).to.eql({
-						dataVersion: 3,
-						id: 1,
-						fieldFromV3: true
+					it('should return data v1', function () {
+						expect(bodyReturned).to.eql(testCases[version]);
 					});
 				});
 			});
