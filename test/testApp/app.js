@@ -25,20 +25,19 @@ app.get('/entity/:id/:version(v1|v2|v3)', function(req, res) {
 });
 
 ////Allan's version
-function getData() {
-	return function(req,res) {
-		var version = getVersionFromURL(req.url);
-		var dataV2 = db.getEntityById(parseInt(req.params.id));
-		var patch = transformalot.entity({from: 'v2', to: version});
-		return res.json(patch(dataV2));
-	};
-}
+//function getData() {
+//	return function(req,res) {
+//		var version = getVersionFromURL(req.url);
+//		var dataV2 = db.getEntityById(parseInt(req.params.id));
+//		var patch = transformalot.entity({from: 'v2', to: version});
+//		return res.json(patch(dataV2));
+//	};
+//}
 /////////////////////////
 
 app.get('/entities/:version(v1|v2|v3)', function(req, res) {
 	res.header('content-type', 'application/json; charset=utf-8');
-
-	return db.getDataStream({transform: function(){}}).pipe(res);
+	return db.getDataStream({transform: transforms.entity.getTransformFunctionForStream('v3', req.params.version)}).pipe(res);
 });
 
 function dummyVersionValidator(req, res, next) {
