@@ -51,13 +51,15 @@ module.exports = function(transforms) {
 		var tasks = {};
 		for (var version = fromVersion; version > toVersion; version--) {
 			var transformationCode = 'V' + version + 'toV' + (version-1);
-			tasks[transformationCode] = (function(_version, _transformationCode) {
-				return function(cb) {
-					transforms['v' + _version][_transformationCode].prepareDowngrade(ids, cb);
-				};
-			})(version, transformationCode);
+			tasks[transformationCode] = createDowngradeTask(ids, version, transformationCode);
 		}
 		async.parallel(tasks, callback);
+	}
+
+	function createDowngradeTask(ids, _version, _transformationCode) {
+		return function(cb) {
+			transforms['v' + _version][_transformationCode].prepareDowngrade(ids, cb);
+		};
 	}
 
 	//function prepareUpgrade(ids, fromVersion, toVersion, callback) {
