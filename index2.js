@@ -1,45 +1,71 @@
+var async = require('async');
+
 module.exports = function(transforms) {
 
 	function parseVersion(versionString) {
 		return parseInt(versionString.substring(1));
 	}
 
-	function downgradeData(data, from, to) {
-		from = parseVersion(from);
-		to = parseVersion(to);
-		//console.log('transforming data ', from, '  ', to, data);
-		for (var version = from; version > to; version--) {
-			//console.log('performing from ', version, 'to ', (version-1));
-			data = transforms['v' + version]['V' + version + 'toV' + (version-1)].transform(data);
+	function downgradeData(data, fromVersion, toVersion, preparedData) {
+		for (var version = fromVersion; version > toVersion; version--) {
+			var transformationCode = 'V' + version + 'toV' + (version-1);
+			data = transforms['v' + version][transformationCode].transform(data, preparedData[transformationCode]);
 		}
 		return data;
 	}
 
-	function getTransformFunctionForStream(from, to) {
-		return function(data) {
-			return downgradeData(data, from, to);
-		};
+	function downgradeObject(id, data, fromVersion, toVersion, callback) {
+		fromVersion = parseVersion(fromVersion);
+		toVersion = parseVersion(toVersion);
+		prepareDowngrade([id], fromVersion, toVersion, function(err, preparedData) {
+			if (err) {
+				return callback(err);
+			}
+			//console.log('preparedData', preparedData);
+			var downgradedData = downgradeData(data, fromVersion, toVersion, preparedData);
+			return callback(null, downgradedData);
+		});
 	}
 
-	function upgradeData(data, from, to) {
-		//should call and upgrade functions for one instance using saved data
-		return data;
+	function getTransformFunctionForStream(fromVersion, toVersion, callback) {
+		fromVersion = parseVersion(fromVersion);
+		toVersion = parseVersion(toVersion);
+		prepareDowngrade(null, fromVersion, toVersion, function(err, preparedData) {
+			if(err) {
+				return callback(err);
+			}
+			return callback(null, function(data) {
+				return downgradeData(data, fromVersion, toVersion, preparedData);
+			});
+		});
+
 	}
 
-	function prepareDowngrade(ids, fromVersion, toVersion) {
-		//should call all init upgrade initialize functions and save to status
-		//if id is not specified - call for all id's
+	//function upgradeData(data, from, to) {
+	//	//should call and upgrade functions for one instance using saved data
+	//	return data;
+	//}
+
+	//ToDo: remove ids
+	function prepareDowngrade(ids, fromVersion, toVersion, callback) { //ToDo: add mongo
+		var tasks = {};
+		for (var version = fromVersion; version > toVersion; version--) {
+			var transformationCode = 'V' + version + 'toV' + (version-1);
+			tasks[transformationCode] = (function(_version, _transformationCode) {
+				return function(cb) {
+					transforms['v' + _version][_transformationCode].prepareDowngrade(ids, cb);
+				};
+			})(version, transformationCode);
+		}
+		async.parallel(tasks, callback);
 	}
 
-	function prepareUpgrade(ids, fromVersion, toVersion) {
-		//should call all init upgrade initialize functions and save to status
-	}
+	//function prepareUpgrade(ids, fromVersion, toVersion, callback) {
+	//	//should call all init upgrade initialize functions and save to status
+	//}
 
 	return {
-		prepareDowngrade: prepareDowngrade,
-		prepareUpgrade: prepareUpgrade,
-		downgradeData: downgradeData,
-		upgradeData: upgradeData,
+		downgradeObject: downgradeObject,
 		getTransformFunctionForStream: getTransformFunctionForStream
 	};
 };

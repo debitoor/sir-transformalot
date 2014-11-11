@@ -18,10 +18,12 @@ app.get('/ping', function(req, res) {
 });
 
 //Andrii's version
-app.get('/entity/:id/:version(v1|v2|v3)', function(req, res) {
-	var dataV3 = db.getEntityById(parseInt(req.params.id));
-	var endVersionData = transforms.entity.downgradeData(dataV3, 'v3', req.params.version);
-	return res.json(endVersionData);
+app.get('/entity/:id/:version(v3|v2|v1)', function(req, res) {
+	var parsedId = parseInt(req.params.id);
+	var dataV3 = db.getEntityById(parsedId);
+	transforms.entity.downgradeObject(parsedId, dataV3, 'v3', req.params.version, function(err, endVersionData) { //make options object
+		return res.json(endVersionData);
+	});
 });
 
 ////Allan's version
@@ -35,9 +37,16 @@ app.get('/entity/:id/:version(v1|v2|v3)', function(req, res) {
 //}
 /////////////////////////
 
-app.get('/entities/:version(v1|v2|v3)', function(req, res) {
+/*
+ var transformStream = transforms.entity.getTransformStream('v3', req.params.version);
+ return db.getDataStream().pipe(transformStream).pipe(res);
+ */
+
+app.get('/entities/:version(v1|v2|v3)', function(req, res, next) {
 	res.header('content-type', 'application/json; charset=utf-8');
-	return db.getDataStream({transform: transforms.entity.getTransformFunctionForStream('v3', req.params.version)}).pipe(res);
+	transforms.entity.getTransformFunctionForStream('v3', req.params.version, function(err, transformationFunction) {
+		return db.getDataStream({transform: transformationFunction}).pipe(res);
+	});
 });
 
 function dummyVersionValidator(req, res, next) {

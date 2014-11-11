@@ -9,11 +9,14 @@ describe('integration tests', function () {
 			var testCases = {
 				v1: {
 					dataVersion: 1,
-					id: 1
+					id: 1,
+					dataFromInitForV3toV2: 'yeap',
+					dataFromInitForV2toV1: 'rly?'
 				},
 				v2: {
 					dataVersion: 2,
-					id: 1
+					id: 1,
+					dataFromInitForV3toV2: 'yeap'
 				},
 				v3: {
 					dataVersion: 3,
@@ -39,17 +42,23 @@ describe('integration tests', function () {
 			var testCases = {
 				v1: [{
 					dataVersion: 1,
-					id: 1
+					id: 1,
+					dataFromInitForV3toV2: 'yeap',
+					dataFromInitForV2toV1: 'rly?'
 				}, {
 					dataVersion: 1,
-					id: 2
+					id: 2,
+					dataFromInitForV2toV1: 'indeed',
+					dataFromInitForV3toV2: 'nice'
 				}],
 				v2: [{
 					dataVersion: 2,
-					id: 1
+					id: 1,
+					dataFromInitForV3toV2: 'yeap'
 				}, {
 					dataVersion: 2,
-					id: 2
+					id: 2,
+					dataFromInitForV3toV2: 'nice'
 				}],
 				v3: [{
 					dataVersion: 3,
@@ -68,7 +77,7 @@ describe('integration tests', function () {
 						get('entities/' + version, done);
 					});
 
-					it('should return data v1', function () {
+					it('should return data ' + version, function () {
 						expect(bodyReturned).to.eql(testCases[version]);
 					});
 				});
