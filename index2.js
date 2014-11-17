@@ -1,4 +1,5 @@
 var async = require('async');
+var through2 = require('through2');
 
 module.exports = function(transforms) {
 
@@ -6,7 +7,7 @@ module.exports = function(transforms) {
 		return parseInt(versionString.substring(1));
 	}
 
-	function downgradeData(data, fromVersion, toVersion, preparedData) {
+	function _downgradeReadyData(data, fromVersion, toVersion, preparedData) {
 		for (var version = fromVersion; version > toVersion; version--) {
 			var transformationCode = 'V' + version + 'toV' + (version-1);
 			data = transforms['v' + version][transformationCode].transform(data, preparedData[transformationCode]);
@@ -14,51 +15,49 @@ module.exports = function(transforms) {
 		return data;
 	}
 
-	function downgradeObject(id, data, fromVersion, toVersion, callback) {
+	function downgradeObject(id, data, fromVersion, toVersion, mongo, callback) {
 		fromVersion = parseVersion(fromVersion);
 		toVersion = parseVersion(toVersion);
-		prepareDowngrade([id], fromVersion, toVersion, function(err, preparedData) {
+		_prepareDowngrade([id], fromVersion, toVersion, mongo, function(err, preparedData) {
 			if (err) {
 				return callback(err);
 			}
-			//console.log('preparedData', preparedData);
-			var downgradedData = downgradeData(data, fromVersion, toVersion, preparedData);
+			var downgradedData = _downgradeReadyData(data, fromVersion, toVersion, preparedData);
 			return callback(null, downgradedData);
 		});
 	}
 
-	function getTransformFunctionForStream(fromVersion, toVersion, callback) {
+	function getDowngradeStream(fromVersion, toVersion, mongo) {
 		fromVersion = parseVersion(fromVersion);
 		toVersion = parseVersion(toVersion);
-		prepareDowngrade(null, fromVersion, toVersion, function(err, preparedData) {
-			if(err) {
-				return callback(err);
+		var preparedDataSets = null;
+		return through2.obj(function(obj, encoding, callback){
+			var through = this;
+			if(!preparedDataSets) {
+				_prepareDowngrade(null, fromVersion, toVersion, mongo, function(err, _preparedDataSets){
+					preparedDataSets = _preparedDataSets;
+					through.push(_downgradeReadyData(obj, fromVersion, toVersion, preparedDataSets));
+					callback();
+				});
+			} else {
+				through.push(_downgradeReadyData(obj, fromVersion, toVersion, preparedDataSets));
+				callback();
 			}
-			return callback(null, function(data) {
-				return downgradeData(data, fromVersion, toVersion, preparedData);
-			});
 		});
-
 	}
 
-	//function upgradeData(data, from, to) {
-	//	//should call and upgrade functions for one instance using saved data
-	//	return data;
-	//}
-
-	//ToDo: remove ids
-	function prepareDowngrade(ids, fromVersion, toVersion, callback) { //ToDo: add mongo
+	function _prepareDowngrade(id, fromVersion, toVersion, mongo, callback) {
 		var tasks = {};
 		for (var version = fromVersion; version > toVersion; version--) {
 			var transformationCode = 'V' + version + 'toV' + (version-1);
-			tasks[transformationCode] = createDowngradeTask(ids, version, transformationCode);
+			tasks[transformationCode] = createDowngradeTask(id, version, transformationCode, mongo);
 		}
 		async.parallel(tasks, callback);
 	}
 
-	function createDowngradeTask(ids, _version, _transformationCode) {
+	function createDowngradeTask(id, _version, _transformationCode, mongo) {
 		return function(cb) {
-			transforms['v' + _version][_transformationCode].prepareDowngrade(ids, cb);
+			transforms['v' + _version][_transformationCode].prepareDowngrade(id, mongo, cb);
 		};
 	}
 
@@ -68,6 +67,6 @@ module.exports = function(transforms) {
 
 	return {
 		downgradeObject: downgradeObject,
-		getTransformFunctionForStream: getTransformFunctionForStream
+		getDowngradeStream: getDowngradeStream
 	};
 };

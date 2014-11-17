@@ -3,6 +3,7 @@ var _ = require('lodash');
 var chai = require('chai');
 var attempt = require('attempt');
 chai.config.includeStack = true;
+require('chai-pretty-expect')(chai);
 global.expect = chai.expect;
 
 var appStarted = false;

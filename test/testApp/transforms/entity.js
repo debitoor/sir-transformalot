@@ -6,7 +6,7 @@ var entityConfig = {
 				data.dataFromInitForV1toV2 = preparedData[data.id].dataFromInitForV1toV2;
 				return data;
 			},
-			prepareUpgrade: function(ids, callback) {
+			prepareUpgrade: function(id, mongo, callback) {
 				var asyncDataFromDb = {
 					1: {
 						dataFromInitForV1toV2: 'wat'
@@ -25,7 +25,7 @@ var entityConfig = {
 				data.dataFromInitForV2toV1 = preparedData[data.id].dataFromInitForV2toV1;
 				return data;
 			},
-			prepareDowngrade: function(ids, callback) {
+			prepareDowngrade: function(id, mongo, callback) {
 				setTimeout(function(){
 					var asyncDataFromDb = {
 						1: {
@@ -56,7 +56,7 @@ var entityConfig = {
 				data.dataFromInitForV3toV2 = preparedData[data.id].dataFromInitForV3toV2;
 				return data;
 			},
-			prepareDowngrade: function(ids, callback) { //maybe optionalIds
+			prepareDowngrade: function(id, mongo, callback) { //maybe optionalIds
 				setTimeout(function(){
 					var asyncDataFromDb = {
 						1: {

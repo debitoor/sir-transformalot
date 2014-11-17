@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var JSONStream = require('JSONStream');
+//var JSONStream = require('JSONStream');
 var es = require('event-stream');
 
 function getDataArray(){
@@ -21,8 +21,7 @@ module.exports = {
 	getEntityById: function(id) {
 		return _.find(getDataArray(), function(el) {return el.id === id;});
 	},
-	getDataStream: function(options) {
-		var transformFunction = (options && options.transform) ? options.transform : function(data) {return data;};
-		return es.readArray(getDataArray()).pipe(es.mapSync(transformFunction)).pipe(JSONStream.stringify());
+	getDataStream: function() {
+		return es.readArray(getDataArray());
 	}
 };
