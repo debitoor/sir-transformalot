@@ -1,5 +1,4 @@
 var _ = require('lodash');
-//var JSONStream = require('JSONStream');
 var es = require('event-stream');
 
 function getDataArray(){
