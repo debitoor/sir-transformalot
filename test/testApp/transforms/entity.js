@@ -73,5 +73,5 @@ var entityConfig = {
 	}
 };
 
-var transformalot = require('../../../index2');
+var transformalot = require('../../../sir-transformalot');
 module.exports = transformalot(entityConfig);

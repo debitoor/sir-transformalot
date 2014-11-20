@@ -26,7 +26,7 @@
     "attempt": "^1.0.0",
     "body-parser": "^1.9.2",
     "chai": "^1.9.2",
-    "chai-pretty-expect": "git+ssh://git@github.com:e-conomic/chai-pretty-expect",
+    "chai-pretty-expect": "^1.0.0",
     "event-stream": "^3.1.7",
     "express": "^4.10.1",
     "mocha": "^2.0.1",
@@ -35,7 +35,6 @@
     "request": "^2.47.0"
   },
   "dependencies": {
-    "after-all": "^2.0.1",
     "async": "^0.9.0",
     "lodash": "^2.4.1",
     "through2": "^0.6.3",

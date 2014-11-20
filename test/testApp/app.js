@@ -22,7 +22,7 @@ app.get('/ping', function(req, res) {
 app.get('/entity/:id/:version(v3|v2|v1)', function(req, res) {
 	var parsedId = parseInt(req.params.id);
 	var dataV3 = db.getEntityById(parsedId);
-	transforms.entity.downgradeObject(parsedId, dataV3, 'v3', req.params.version, 'mongo :p', function(err, endVersionData) { //make options object
+	transforms.entity.transformObject(parsedId, dataV3, 'v3', req.params.version, 'mongo :p', function(err, endVersionData) { //make options object
 		return res.json(endVersionData);
 	});
 });
