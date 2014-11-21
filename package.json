@@ -2,7 +2,7 @@
   "name": "sir-transformalot",
   "version": "0.0.0",
   "description": "Transform data between versions",
-  "main": "index.js",
+  "main": "sir-transformalot.js",
   "scripts": {
     "test": "mocha"
   },
