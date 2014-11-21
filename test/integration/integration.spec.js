@@ -31,7 +31,7 @@ describe('integration tests', function () {
 						get('entity/1/' + version, done);
 					});
 
-					it('should return data v1', function () {
+					it('should return data ' + version, function () {
 						expect(bodyReturned).to.eql(testCases[version]);
 					});
 				});
@@ -89,16 +89,15 @@ describe('integration tests', function () {
 		var testCases = {
 			v1: {
 				dataVersion: 1,
-				id: 434
+				id: 1
 			},
 			v2: {
 				dataVersion: 2,
-				id: 323,
-				dataFromInitForV3toV2: 'yeap'
+				id: 1
 			},
 			v3: {
 				dataVersion: 3,
-				id: 4441,
+				id: 1,
 				fieldFromV3: true
 			}
 		};
@@ -110,7 +109,7 @@ describe('integration tests', function () {
 				});
 
 				it('should return object in format of ' + version, function () {
-					expect(bodyReturned).to.eql(testCases[version]);
+					expect(bodyReturned).to.containSubset(testCases[version]);
 				});
 			});
 		});

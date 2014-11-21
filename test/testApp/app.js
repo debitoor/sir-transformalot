@@ -18,11 +18,13 @@ app.get('/ping', function(req, res) {
 	});
 });
 
-//Andrii's version
-app.get('/entity/:id/:version(v3|v2|v1)', function(req, res) {
+app.get('/entity/:id/:version(v3|v2|v1)', function(req, res, next) {
 	var parsedId = parseInt(req.params.id);
 	var dataV3 = db.getEntityById(parsedId);
-	transforms.entity.transformObject(parsedId, dataV3, 'v3', req.params.version, 'mongo :p', function(err, endVersionData) { //make options object
+	transforms.entity.transformObject(parsedId, dataV3, 'v3', req.params.version, 'mongo :p', function(err, endVersionData) { //make options object?
+		if(err) {
+			return next(err);
+		}
 		return res.json(endVersionData);
 	});
 });
@@ -30,25 +32,33 @@ app.get('/entity/:id/:version(v3|v2|v1)', function(req, res) {
 app.get('/entities/:version(v3|v2|v1)', function(req, res, next) {
 	res.header('content-type', 'application/json; charset=utf-8');
 	var mongo = "Yeap, this is mongo :P";
-	var transformStream = transforms.entity.getDowngradeStream('v3', req.params.version, mongo);
+	var transformStream = transforms.entity.getTransformStream('v3', req.params.version, mongo);
 	pump(db.getDataStream(), transformStream, JSONStream.stringify(), res, function(err) {
-		next(err);
+		if (err) {
+			next(err);
+		}
 	});
 });
 
-function dummyVersionValidator(req, res, next) {
-	if(req.params.version !== (req.body.version + '')) {
-		res.statusCode = 400;
-		return res.json({
-			msg: 'data format mismatch'
-		});
-	}
-	next();
-}
 
-app.post('/entity/:version(v3|v2|v1)', dummyVersionValidator, function(req, res) {
-	return res.json({
-		status: 'ok'
+app.post('/entity/:version(v3|v2|v1)', function(req, res, next) {
+	var parsedId = req.body.id;
+	var dataVX = req.body;
+	//upgradeData
+	transforms.entity.transformObject(parsedId, dataVX, req.params.version, 'v3', 'mongo :p', function(err, endVersionData) {
+		if(err) {
+			return next(err);
+		}
+		if (endVersionData.dataVersion !== 3) {
+			next(new Error("Oh no... it's not upgraded"));
+		}
+		//downgrade data
+		transforms.entity.transformObject(parsedId, dataVX, 'v3', req.params.version, 'mongo :p', function(err, endVersionData) {
+			if(err) {
+				return next(err);
+			}
+			return res.json(endVersionData);
+		});
 	});
 });
 

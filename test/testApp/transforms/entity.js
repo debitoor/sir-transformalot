@@ -3,10 +3,9 @@ var entityConfig = {
 		V1toV2: {
 			transform: function(data, preparedData) {
 				data.dataVersion = 2;
-				data.dataFromInitForV1toV2 = preparedData[data.id].dataFromInitForV1toV2;
 				return data;
 			},
-			prepareUpgrade: function(id, mongo, callback) {
+			prepareTransform: function(id, mongo, callback) {
 				var asyncDataFromDb = {
 					1: {
 						dataFromInitForV1toV2: 'wat'
@@ -25,8 +24,8 @@ var entityConfig = {
 				data.dataFromInitForV2toV1 = preparedData[data.id].dataFromInitForV2toV1;
 				return data;
 			},
-			prepareDowngrade: function(id, mongo, callback) {
-				setTimeout(function(){
+			prepareTransform: function(id, mongo, callback) {
+				setTimeout(function() {
 					var asyncDataFromDb = {
 						1: {
 							dataFromInitForV2toV1: 'rly?'
@@ -44,9 +43,10 @@ var entityConfig = {
 		V2toV3: {
 			transform: function(data) {
 				data.dataVersion = 3;
+				return data;
 			},
-			prepareUpgrade: function() {
-
+			prepareTransform: function(id, mongo, callback) {
+				return callback(null, {1:{}, 2:{}});
 			}
 		},
 		V3toV2: {
@@ -56,7 +56,7 @@ var entityConfig = {
 				data.dataFromInitForV3toV2 = preparedData[data.id].dataFromInitForV3toV2;
 				return data;
 			},
-			prepareDowngrade: function(id, mongo, callback) { //maybe optionalIds
+			prepareTransform: function(id, mongo, callback) { //maybe optionalIds
 				setTimeout(function(){
 					var asyncDataFromDb = {
 						1: {

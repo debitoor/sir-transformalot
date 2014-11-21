@@ -27,6 +27,7 @@
     "body-parser": "^1.9.2",
     "chai": "^1.9.2",
     "chai-pretty-expect": "^1.0.0",
+    "chai-subset": "^0.3.0",
     "event-stream": "^3.1.7",
     "express": "^4.10.1",
     "mocha": "^2.0.1",

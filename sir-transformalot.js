@@ -8,9 +8,17 @@ module.exports = function(transforms) {
 	}
 
 	function _transformReadyData(data, fromVersion, toVersion, preparedData) {
-		for (var version = fromVersion; version > toVersion; version--) {
-			var transformationCode = 'V' + version + 'toV' + (version-1);
-			data = transforms['v' + version][transformationCode].transform(data, preparedData[transformationCode]);
+		var version, transformationCode;
+		if (fromVersion < toVersion) {
+			for (version = fromVersion; version < toVersion; version++) {
+				transformationCode = 'V' + version + 'toV' + (version + 1);
+				data = transforms['v' + (version + 1)][transformationCode].transform(data, preparedData[transformationCode]);
+			}
+		} else if (fromVersion > toVersion) {
+			for (version = fromVersion; version > toVersion; version--) {
+				transformationCode = 'V' + version + 'toV' + (version - 1);
+				data = transforms['v' + version][transformationCode].transform(data, preparedData[transformationCode]);
+			}
 		}
 		return data;
 	}
@@ -22,12 +30,12 @@ module.exports = function(transforms) {
 			if (err) {
 				return callback(err);
 			}
-			var downgradedData = _transformReadyData(data, fromVersion, toVersion, preparedData);
-			return callback(null, downgradedData);
+			var transformedData = _transformReadyData(data, fromVersion, toVersion, preparedData);
+			return callback(null, transformedData);
 		});
 	}
 
-	function getDowngradeStream(fromVersion, toVersion, mongo) {
+	function getTransformStream(fromVersion, toVersion, mongo) {
 		fromVersion = parseVersion(fromVersion);
 		toVersion = parseVersion(toVersion);
 		var preparedDataSets = null;
@@ -47,22 +55,33 @@ module.exports = function(transforms) {
 	}
 
 	function _prepareTransform(id, fromVersion, toVersion, mongo, callback) {
+		var version, transformationCode;
 		var tasks = {};
-		for (var version = fromVersion; version > toVersion; version--) {
-			var transformationCode = 'V' + version + 'toV' + (version - 1);
-			tasks[transformationCode] = createDowngradeTask(id, version, transformationCode, mongo);
+		if (fromVersion < toVersion) {
+			for (version = fromVersion; version < toVersion; version++) {
+				transformationCode = 'V' + version + 'toV' + (version + 1);
+				tasks[transformationCode] = createPrepareTransformTask(id, version + 1, transformationCode, mongo);
+			}
+			async.parallel(tasks, callback);
+		} else if (fromVersion > toVersion) {
+			for (version = fromVersion; version > toVersion; version--) {
+				transformationCode = 'V' + version + 'toV' + (version - 1);
+				tasks[transformationCode] = createPrepareTransformTask(id, version, transformationCode, mongo);
+			}
+			async.parallel(tasks, callback);
+		} else {
+			callback();
 		}
-		async.parallel(tasks, callback);
 	}
 
-	function createDowngradeTask(id, _version, _transformationCode, mongo) {
+	function createPrepareTransformTask(id, _version, _transformationCode, mongo) {
 		return function(cb) {
-			transforms['v' + _version][_transformationCode].prepareDowngrade(id, mongo, cb);
+			transforms['v' + _version][_transformationCode].prepareTransform(id, mongo, cb);
 		};
 	}
 
 	return {
 		transformObject: transformObject,
-		getDowngradeStream: getDowngradeStream
+		getTransformStream: getTransformStream
 	};
 };
