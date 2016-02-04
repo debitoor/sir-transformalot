@@ -18,7 +18,7 @@ app.get('/ping', function(req, res) {
 	});
 });
 
-app.get('/entity/:id/:version(v3|v2|v1)', function(req, res, next) {
+app.get('/entity/:id/:version(v4|v3|v2|v1)', function(req, res, next) {
 	var parsedId = parseInt(req.params.id);
 	var dataV3 = db.getEntityById(parsedId);
 	transforms.entity.transformObject(parsedId, dataV3, 'v3', req.params.version, 'mongo :p', function(err, endVersionData) { //make options object?
@@ -29,7 +29,7 @@ app.get('/entity/:id/:version(v3|v2|v1)', function(req, res, next) {
 	});
 });
 
-app.get('/entities/:version(v3|v2|v1)', function(req, res, next) {
+app.get('/entities/:version(v4|v3|v2|v1)', function(req, res, next) {
 	res.header('content-type', 'application/json; charset=utf-8');
 	var mongo = "Yeap, this is mongo :P";
 	var transformStream = transforms.entity.getTransformStream('v3', req.params.version, mongo);
@@ -41,7 +41,7 @@ app.get('/entities/:version(v3|v2|v1)', function(req, res, next) {
 });
 
 
-app.post('/entity/:version(v3|v2|v1)', function(req, res, next) {
+app.post('/entity/:version(v4|v3|v2|v1)', function(req, res, next) {
 	var parsedId = req.body.id;
 	var dataVX = req.body;
 	//upgradeData

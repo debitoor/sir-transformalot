@@ -75,9 +75,9 @@ module.exports = function(transforms) {
 	}
 
 	function createPrepareTransformTask(id, _version, _transformationCode, mongo) {
-		return function(cb) {
-			transforms['v' + _version][_transformationCode].prepareTransform(id, mongo, cb);
-		};
+		var prepareTransform = transforms['v' + _version][_transformationCode].prepareTransform ||
+			function (id, mongo, cb) {cb();};
+		return prepareTransform.bind(null, id, mongo);
 	}
 
 	return {

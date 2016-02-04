@@ -70,6 +70,20 @@ var entityConfig = {
 				}, 1);
 			}
 		}
+	},
+	v4: {
+		V3toV4: {
+			transform: function(data) {
+				data.dataVersion = 4;
+				return data;
+			}
+		},
+		V4toV3: {
+			transform: function(data) {
+				data.dataVersion = 3;
+				return data;
+			}
+		}
 	}
 };
 

@@ -8,6 +8,24 @@ SETUP
 You should have `transforms` folder with file `*.js` that represents transform for your entity
 Example of transforms file you can find [here](https://github.com/e-conomic/sir-transformalot/blob/master/test/testApp/transforms/entity.js)
 
+Configure transform
+==========================
+// entity.js
+module.exports = {
+	v2: {
+		V1toV2: {
+			transform(data) {
+				return data;
+			},
+
+			// optional
+			prepareTransform(id, mongo, callback) {
+				mongo.findOne({id}, callback);
+			}
+		}
+	}
+}
+
 Transform for single object
 ===========================
 ```js
