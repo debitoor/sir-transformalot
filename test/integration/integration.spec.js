@@ -68,10 +68,19 @@ describe('integration tests', function () {
 					dataVersion: 3,
 					id: 2,
 					fieldFromV3: true
+				}],
+				v4: [{
+					dataVersion: 4,
+					id: 1,
+					fieldFromV3: true
+				}, {
+					dataVersion: 4,
+					id: 2,
+					fieldFromV3: true
 				}]
 			};
 
-			['v1', 'v2', 'v3'].forEach(function(version) {
+			['v1', 'v2', 'v3', 'v4'].forEach(function(version) {
 				describe('GET ' + version, function () {
 					before(function (done) {
 						get('entities/' + version, done);
