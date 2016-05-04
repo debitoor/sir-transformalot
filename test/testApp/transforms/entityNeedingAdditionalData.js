@@ -1,10 +1,10 @@
-var ADDITIONAL_DATA_NOT_SET_TEXT = 'additionalData should have been additionalData';
+var ADDITIONAL_DATA_NOT_SET_TEXT = 'additionalData was expected to be set';
 
 var entityNeedingAdditionalDataConfig = {
 	v2: {
 		V1toV2: {
 			transform: function(data, preparedData, additionalData) {
-				if (additionalData.property1 !== 'additionalData') {
+				if (additionalData.someProperty !== 'propertyValue') {
 					throw new Error(ADDITIONAL_DATA_NOT_SET_TEXT);
 				}
 
@@ -12,7 +12,7 @@ var entityNeedingAdditionalDataConfig = {
 				return data;
 			},
 			prepareTransform: function(id, mongo, additionalData, callback) {
-				if (additionalData.property1 !== 'additionalData') {
+				if (additionalData.someProperty !== 'propertyValue') {
 					return callback(new Error(ADDITIONAL_DATA_NOT_SET_TEXT));
 				}
 
@@ -30,7 +30,7 @@ var entityNeedingAdditionalDataConfig = {
 		},
 		V2toV1: {
 			transform: function(data, preparedData, additionalData) {
-				if (additionalData.property1 !== 'additionalData') {
+				if (additionalData.someProperty !== 'propertyValue') {
 					throw new Error(ADDITIONAL_DATA_NOT_SET_TEXT);
 				}
 
@@ -39,7 +39,7 @@ var entityNeedingAdditionalDataConfig = {
 				return data;
 			},
 			prepareTransform: function(id, mongo, additionalData, callback) {
-				if (additionalData.property1 !== 'additionalData') {
+				if (additionalData.someProperty !== 'propertyValue') {
 					return callback(new Error(ADDITIONAL_DATA_NOT_SET_TEXT));
 				}
 

@@ -66,7 +66,7 @@ app.post('/entityNeedingAdditionalData/:version(v2|v1)', function(req, res, next
 	var parsedId = req.body.id;
 	var dataVX = req.body;
 	var additionalData = {
-		property1: req.body.additionalData
+		someProperty: 'propertyValue'
 	};
 	//upgradeData
 	transforms.entityNeedingAdditionalData.transformObject(parsedId, dataVX, req.params.version, 'v2', 'mongo :p', additionalData, function(err, endVersionData) {
