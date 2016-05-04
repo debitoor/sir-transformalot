@@ -123,4 +123,22 @@ describe('integration tests', function () {
 			});
 		});
 	});
+
+	describe('when additional data is send to transform', function () {
+		before(function (done) {
+			post('entityNeedingAdditionalData/v1', {
+				dataVersion: 1,
+				id: 1,
+				additionalData: 'additionalData'
+			}, done);
+		});
+
+		it('should handle them', function () {
+			expect(bodyReturned).to.containSubset({
+				dataVersion: 1,
+				id: 1,
+				additionalData: 'additionalData'
+			});
+		});
+	});
 });

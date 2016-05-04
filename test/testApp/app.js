@@ -62,5 +62,29 @@ app.post('/entity/:version(v4|v3|v2|v1)', function(req, res, next) {
 	});
 });
 
+app.post('/entityNeedingAdditionalData/:version(v2|v1)', function(req, res, next) {
+	var parsedId = req.body.id;
+	var dataVX = req.body;
+	var additionalData = {
+		property1: req.body.additionalData
+	};
+	//upgradeData
+	transforms.entityNeedingAdditionalData.transformObject(parsedId, dataVX, req.params.version, 'v2', 'mongo :p', additionalData, function(err, endVersionData) {
+		if(err) {
+			return next(err);
+		}
+		if (endVersionData.dataVersion !== 2) {
+			next(new Error("Oh no... it's not upgraded"));
+		}
+		//downgrade data
+		transforms.entityNeedingAdditionalData.transformObject(parsedId, dataVX, 'v2', req.params.version, 'mongo :p', additionalData, function(err, endVersionData) {
+			if(err) {
+				return next(err);
+			}
+			return res.json(endVersionData);
+		});
+	});
+});
+
 server.listen(8983);
 console.log('Starting test app on http://localhost:8983');

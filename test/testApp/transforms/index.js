@@ -1,3 +1,4 @@
 module.exports = {
-	entity: require('./entity')
+	entity: require('./entity'),
+	entityNeedingAdditionalData: require('./entityNeedingAdditionalData')
 };
