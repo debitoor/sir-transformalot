@@ -16,16 +16,7 @@ var entityNeedingAdditionalDataConfig = {
 					return callback(new Error(ADDITIONAL_DATA_NOT_SET_TEXT));
 				}
 
-				var asyncDataFromDb = {
-					1: {
-						dataFromInitForV1toV2: 'wat'
-					},
-					2: {
-						dataFromInitForV1toV2: 'lol'
-					}
-				};
-
-				return callback(null, asyncDataFromDb);
+				return callback(null);
 			}
 		},
 		V2toV1: {
@@ -35,7 +26,6 @@ var entityNeedingAdditionalDataConfig = {
 				}
 
 				data.dataVersion = 1;
-				data.dataFromInitForV2toV1 = preparedData[data.id].dataFromInitForV2toV1;
 				return data;
 			},
 			prepareTransform: function(id, mongo, additionalData, callback) {
@@ -43,17 +33,7 @@ var entityNeedingAdditionalDataConfig = {
 					return callback(new Error(ADDITIONAL_DATA_NOT_SET_TEXT));
 				}
 
-				setTimeout(function() {
-					var asyncDataFromDb = {
-						1: {
-							dataFromInitForV2toV1: 'rly?'
-						},
-						2: {
-							dataFromInitForV2toV1: 'indeed'
-						}
-					};
-					return callback(null, asyncDataFromDb);
-				}, 1);
+				return callback(null);
 			}
 		}
 	}
