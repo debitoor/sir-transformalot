@@ -50,10 +50,34 @@ app.post('/entity/:version(v4|v3|v2|v1)', function(req, res, next) {
 			return next(err);
 		}
 		if (endVersionData.dataVersion !== 3) {
-			next(new Error("Oh no... it's not upgraded"));
+			return next(new Error("Oh no... it's not upgraded"));
 		}
 		//downgrade data
 		transforms.entity.transformObject(parsedId, dataVX, 'v3', req.params.version, 'mongo :p', function(err, endVersionData) {
+			if(err) {
+				return next(err);
+			}
+			return res.json(endVersionData);
+		});
+	});
+});
+
+app.post('/entityNeedingOptions/:version(v2|v1)', function(req, res, next) {
+	var parsedId = req.body.id;
+	var dataVX = req.body;
+	var options = {
+		someProperty: 'propertyValue'
+	};
+	//upgradeData
+	transforms.entityNeedingOptions.transformObject(parsedId, dataVX, req.params.version, 'v2', 'mongo :p', options, function(err, endVersionData) {
+		if(err) {
+			return next(err);
+		}
+		if (endVersionData.dataVersion !== 2) {
+			return next(new Error("Oh no... it's not upgraded"));
+		}
+		//downgrade data
+		transforms.entityNeedingOptions.transformObject(parsedId, dataVX, 'v2', req.params.version, 'mongo :p', options, function(err, endVersionData) {
 			if(err) {
 				return next(err);
 			}

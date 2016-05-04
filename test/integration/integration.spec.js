@@ -123,4 +123,20 @@ describe('integration tests', function () {
 			});
 		});
 	});
+
+	describe('when options is send to transform', function () {
+		before(function (done) {
+			post('entityNeedingOptions/v1', {
+				dataVersion: 1,
+				id: 1,
+			}, done);
+		});
+
+		it('should handle them', function () {
+			expect(bodyReturned).to.containSubset({
+				dataVersion: 1,
+				id: 1
+			});
+		});
+	});
 });
