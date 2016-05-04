@@ -1,4 +1,4 @@
 module.exports = {
 	entity: require('./entity'),
-	entityNeedingAdditionalData: require('./entityNeedingAdditionalData')
+	entityNeedingOptions: require('./entityNeedingOptions')
 };

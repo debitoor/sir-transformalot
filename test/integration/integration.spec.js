@@ -124,9 +124,9 @@ describe('integration tests', function () {
 		});
 	});
 
-	describe('when additional data is send to transform', function () {
+	describe('when options is send to transform', function () {
 		before(function (done) {
-			post('entityNeedingAdditionalData/v1', {
+			post('entityNeedingOptions/v1', {
 				dataVersion: 1,
 				id: 1,
 			}, done);
