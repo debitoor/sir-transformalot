@@ -79,11 +79,12 @@ module.exports = function(transforms) {
 	}
 
 	function createPrepareTransformTask(id, _version, _transformationCode, mongo, options) {
-		var prepareTransform = transforms['v' + _version][_transformationCode].prepareTransform ||
-			function (id, mongo, cb) {cb();};
+		var prepareTransform = transforms['v' + _version][_transformationCode].prepareTransform;
 		if (options) {
+			prepareTransform = prepareTransform || function (id, mongo, options, cb) {cb();};
 			return prepareTransform.bind(null, id, mongo, options);
 		}
+		prepareTransform = prepareTransform || function (id, mongo, cb) {cb();};
 		return prepareTransform.bind(null, id, mongo);
 	}
 
