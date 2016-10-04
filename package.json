@@ -4,7 +4,8 @@
   "description": "Transform data between versions",
   "main": "sir-transformalot.js",
   "scripts": {
-    "test": "mocha"
+    "test": "istanbul cover _mocha",
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -28,8 +29,10 @@
     "chai": "^1.9.2",
     "chai-pretty-expect": "^1.0.0",
     "chai-subset": "^0.3.0",
+    "coveralls": "2.11.14",
     "event-stream": "^3.1.7",
     "express": "^4.10.1",
+    "istanbul": "0.4.5",
     "mocha": "^2.0.1",
     "mocha-jshint": "0.0.9",
     "pump": "^1.0.0",
@@ -39,5 +42,11 @@
     "async": "^0.9.0",
     "lodash": "^2.4.1",
     "through2": "^0.6.3"
+  },
+  "files": [
+    "sir-transformalot"
+  ],
+  "engines": {
+    "node": ">=4"
   }
 }

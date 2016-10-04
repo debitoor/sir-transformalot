@@ -1,5 +1,5 @@
-Sir Transformalot
-=================
+Sir Transformalot [![Build Status](https://travis-ci.org/debitoor/sir-transformalot.svg?branch=master)](https://travis-ci.org/debitoor/sir-transformalot) [![Coverage Status](https://coveralls.io/repos/github/debitoor/sir-transformalot/badge.svg?branch=master)](https://coveralls.io/github/debitoor/sir-transformalot?branch=master) [![dependencies Status](https://david-dm.org/debitoor/sir-transformalot/status.svg)](https://david-dm.org/debitoor/sir-transformalot) [![devDependencies Status](https://david-dm.org/debitoor/sir-transformalot/dev-status.svg)](https://david-dm.org/debitoor/sir-transformalot?type=dev)
+================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
 
 A utility for version transformation of data.
 
