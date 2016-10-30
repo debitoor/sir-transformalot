@@ -25,7 +25,7 @@ global.ensureApp = function() {
 			return request.get('http://localhost:8983/ping', this);
 		}, function(err, results) {
 			if (err) {
-				console.log("failed to start app. Attempts: 5");
+				console.log('failed to start app. Attempts: 5');
 			}
 			console.log('App is up and running!');
 			return done(err, results);
