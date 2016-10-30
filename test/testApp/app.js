@@ -31,7 +31,7 @@ app.get('/entity/:id/:version(v4|v3|v2|v1)', function(req, res, next) {
 
 app.get('/entities/:version(v4|v3|v2|v1)', function(req, res, next) {
 	res.header('content-type', 'application/json; charset=utf-8');
-	var mongo = "Yeap, this is mongo :P";
+	var mongo = 'Yeap, this is mongo :P';
 	var transformStream = transforms.entity.getTransformStream('v3', req.params.version, mongo);
 	pump(db.getDataStream(), transformStream, JSONStream.stringify(), res, function(err) {
 		if (err) {
@@ -50,7 +50,7 @@ app.post('/entity/:version(v4|v3|v2|v1)', function(req, res, next) {
 			return next(err);
 		}
 		if (endVersionData.dataVersion !== 3) {
-			return next(new Error("Oh no... it's not upgraded"));
+			return next(new Error('Oh no... it\'s not upgraded'));
 		}
 		//downgrade data
 		transforms.entity.transformObject(parsedId, dataVX, 'v3', req.params.version, 'mongo :p', function(err, endVersionData) {
@@ -74,7 +74,7 @@ app.post('/entityNeedingOptions/:version(v2|v1)', function(req, res, next) {
 			return next(err);
 		}
 		if (endVersionData.dataVersion !== 2) {
-			return next(new Error("Oh no... it's not upgraded"));
+			return next(new Error('Oh no... it\'s not upgraded'));
 		}
 		//downgrade data
 		transforms.entityNeedingOptions.transformObject(parsedId, dataVX, 'v2', req.params.version, 'mongo :p', options, function(err, endVersionData) {
