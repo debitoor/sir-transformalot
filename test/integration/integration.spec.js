@@ -139,4 +139,54 @@ describe('integration tests', function () {
 			});
 		});
 	});
+
+	describe('when transform returns an error', () => {
+		describe('when input data is bad', () => {
+			before(function (done) {
+				post('entityReturningErrorOnTransform/v1', {
+					badInputData: true,
+					badOutputData: false,
+					id: 1
+				}, 500, done);
+			});
+
+			it('should handle them', function () {
+				expect(bodyReturned).to.containSubset({
+					message: 'bad data V1toV2'
+				});
+			});
+		});
+
+		describe('when output data is bad', () => {
+			before(function (done) {
+				post('entityReturningErrorOnTransform/v1', {
+					badInputData: false,
+					badOutputData: true,
+					id: 1
+				}, 500, done);
+			});
+
+			it('should handle them', function () {
+				expect(bodyReturned).to.containSubset({
+					message: 'bad data V2toV1'
+				});
+			});
+		});
+
+		describe('when data is good', () => {
+			before(function (done) {
+				post('entityReturningErrorOnTransform/v1', {
+					badInputData: false,
+					badOutputData: false,
+					id: 1
+				}, 200, done);
+			});
+
+			it('should handle them', function () {
+				expect(bodyReturned).to.containSubset({
+					id: 1
+				});
+			});
+		});
+	});
 });

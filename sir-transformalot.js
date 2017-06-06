@@ -35,6 +35,9 @@ module.exports = function(transforms) {
 				return callback(err);
 			}
 			var transformedData = _transformReadyData(data, fromVersion, toVersion, preparedData, options);
+			if (transformedData instanceof Error) {
+				return callback(transformedData);
+			}
 			return callback(null, transformedData);
 		});
 	}

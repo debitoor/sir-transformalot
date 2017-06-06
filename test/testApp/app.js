@@ -86,5 +86,27 @@ app.post('/entityNeedingOptions/:version(v2|v1)', function(req, res, next) {
 	});
 });
 
+app.post('/entityReturningErrorOnTransform/:version(v2|v1)', function(req, res, next) {
+	var parsedId = req.body.id;
+	var dataVX = req.body;
+	//upgradeData
+	transforms.entityReturningErrorOnTransform.transformObject(parsedId, dataVX, req.params.version, 'v2', 'mongo :p', function(err, endVersionData) {
+		if(err) {
+			return next(err);
+		}
+		//downgrade data
+		transforms.entityReturningErrorOnTransform.transformObject(parsedId, dataVX, 'v2', req.params.version, 'mongo :p', function(err, endVersionData) {
+			if(err) {
+				return next(err);
+			}
+			return res.json(endVersionData);
+		});
+	});
+});
+
+app.use(function (err, req, res, next) {
+	res.status(500).json({message: err.message});
+});
+
 server.listen(8983);
 console.log('Starting test app on http://localhost:8983');
