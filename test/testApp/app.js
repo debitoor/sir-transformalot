@@ -104,6 +104,23 @@ app.post('/entityReturningErrorOnTransform/:version(v2|v1)', function(req, res, 
 	});
 });
 
+app.get('/entityCheckingCompatibility/:version(v2|v1)', function(req, res, next) {
+	var mongo = 'Yeap, this is mongo :P';
+	var checkOpts = {testDataNotCompatible: req.query.testDataNotCompatible === 'true'};
+	transforms.entityCheckingCompatibility.checkCompatibility(req.params.id, 'v2', req.params.version, mongo, checkOpts, (err) => {
+		if (err) {
+			return next(err);
+		}
+		res.header('content-type', 'application/json; charset=utf-8');
+		var transformStream = transforms.entityCheckingCompatibility.getTransformStream('v2', req.params.version, mongo);
+		pump(db.getDataStream(), transformStream, JSONStream.stringify(), res, function(err) {
+			if (err) {
+				next(err);
+			}
+		});
+	});
+});
+
 app.use(function (err, req, res, next) {
 	res.status(500).json({message: err.message});
 });

@@ -1,5 +1,6 @@
 module.exports = {
 	entity: require('./entity'),
 	entityNeedingOptions: require('./entityNeedingOptions'),
-	entityReturningErrorOnTransform: require('./entityReturningErrorOnTransform')
+	entityReturningErrorOnTransform: require('./entityReturningErrorOnTransform'),
+	entityCheckingCompatibility: require('./entityCheckingCompatibility')
 };

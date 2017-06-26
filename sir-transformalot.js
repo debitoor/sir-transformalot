@@ -91,8 +91,46 @@ module.exports = function(transforms) {
 		return prepareTransform.bind(null, id, mongo);
 	}
 
+	function checkCompatibility(id, fromVersion, toVersion, mongo, options, callback) {
+		if (typeof options === 'function') {
+			callback = options;
+			options = null;
+		}
+		fromVersion = parseVersion(fromVersion);
+		toVersion = parseVersion(toVersion);
+		var version, transformationCode;
+		var tasks = {};
+		if (fromVersion < toVersion) {
+			for (version = fromVersion; version < toVersion; version++) {
+				transformationCode = 'V' + version + 'toV' + (version + 1);
+				tasks[transformationCode] = createCheckCompatibilityTask(id, version + 1, transformationCode, mongo, options);
+			}
+			async.parallel(tasks, callback);
+		} else if (fromVersion > toVersion) {
+			for (version = fromVersion; version > toVersion; version--) {
+				transformationCode = 'V' + version + 'toV' + (version - 1);
+				tasks[transformationCode] = createCheckCompatibilityTask(id, version, transformationCode, mongo, options);
+			}
+			async.parallel(tasks, callback);
+		} else {
+			callback();
+		}
+	}
+
+	function createCheckCompatibilityTask(id, _version, _transformationCode, mongo, options) {
+		var checkCompatibility = transforms['v' + _version][_transformationCode].checkCompatibility;
+		if (!checkCompatibility) {
+			return function(cb) {cb();};
+		}
+		if (options) {
+			return checkCompatibility.bind(null, id, mongo, options);
+		}
+		return checkCompatibility.bind(null, id, mongo);
+	}
+
 	return {
 		transformObject: transformObject,
-		getTransformStream: getTransformStream
+		getTransformStream: getTransformStream,
+		checkCompatibility: checkCompatibility
 	};
 };
