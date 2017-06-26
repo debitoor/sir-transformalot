@@ -192,11 +192,9 @@ describe('integration tests', function () {
 
 	describe('when we check for compatibility first', () => {
 		describe('when data is compatible', () => {
-			before(function (done) {
-				get('entityCheckingCompatibility/v1', 200, done);
-			});
+			before((done) => get('entityCheckingCompatibility/v1', 200, done));
 
-			it('should return data', function () {
+			it('should return data', () => {
 				expect(bodyReturned).to.containSubset([
 					{id: 1},
 					{id: 2}
@@ -205,11 +203,9 @@ describe('integration tests', function () {
 		});
 
 		describe('when data is not compatible', () => {
-			before(function (done) {
-				get('entityCheckingCompatibility/v1?testDataNotCompatible=true', 500, done);
-			});
+			before((done) => get('entityCheckingCompatibility/v1?testDataNotCompatible=true', 500, done));
 
-			it('should handle them', function () {
+			it('should handle them', () => {
 				expect(bodyReturned).to.containSubset({
 					message: 'Data incompatible with old version of endpoint, use new version'
 				});
@@ -217,11 +213,9 @@ describe('integration tests', function () {
 		});
 
 		describe('when new version of endpoint is used', () => {
-			before(function (done) {
-				get('entityCheckingCompatibility/v2?testDataNotCompatible=true', 200, done);
-			});
+			before((done) => get('entityCheckingCompatibility/v2?testDataNotCompatible=true', 200, done));
 
-			it('should return data', function () {
+			it('should return data', () => {
 				expect(bodyReturned).to.containSubset([
 					{id: 1},
 					{id: 2}

@@ -1,5 +1,5 @@
-var async = require('async');
-var through2 = require('through2');
+const async = require('async');
+const through2 = require('through2');
 
 module.exports = function(transforms) {
 
@@ -8,7 +8,7 @@ module.exports = function(transforms) {
 	}
 
 	function _transformReadyData(data, fromVersion, toVersion, preparedData, options) {
-		var version, transformationCode;
+		let version, transformationCode;
 		if (fromVersion < toVersion) {
 			for (version = fromVersion; version < toVersion; version++) {
 				transformationCode = 'V' + version + 'toV' + (version + 1);
@@ -34,7 +34,7 @@ module.exports = function(transforms) {
 			if (err) {
 				return callback(err);
 			}
-			var transformedData = _transformReadyData(data, fromVersion, toVersion, preparedData, options);
+			const transformedData = _transformReadyData(data, fromVersion, toVersion, preparedData, options);
 			if (transformedData instanceof Error) {
 				return callback(transformedData);
 			}
@@ -45,9 +45,9 @@ module.exports = function(transforms) {
 	function getTransformStream(fromVersion, toVersion, mongo, options) {
 		fromVersion = parseVersion(fromVersion);
 		toVersion = parseVersion(toVersion);
-		var preparedDataSets = null;
+		let preparedDataSets = null;
 		return through2.obj(function(obj, encoding, callback){
-			var through = this;
+			const through = this;
 			if(!preparedDataSets) {
 				_prepareTransform(null, fromVersion, toVersion, mongo, options, function(err, _preparedDataSets){
 					preparedDataSets = _preparedDataSets;
@@ -62,8 +62,8 @@ module.exports = function(transforms) {
 	}
 
 	function _prepareTransform(id, fromVersion, toVersion, mongo, options, callback) {
-		var version, transformationCode;
-		var tasks = {};
+		let version, transformationCode;
+		const tasks = {};
 		if (fromVersion < toVersion) {
 			for (version = fromVersion; version < toVersion; version++) {
 				transformationCode = 'V' + version + 'toV' + (version + 1);
@@ -82,7 +82,7 @@ module.exports = function(transforms) {
 	}
 
 	function createPrepareTransformTask(id, _version, _transformationCode, mongo, options) {
-		var prepareTransform = transforms['v' + _version][_transformationCode].prepareTransform;
+		let prepareTransform = transforms['v' + _version][_transformationCode].prepareTransform;
 		if (options) {
 			prepareTransform = prepareTransform || function (id, mongo, options, cb) {cb();};
 			return prepareTransform.bind(null, id, mongo, options);
@@ -98,8 +98,8 @@ module.exports = function(transforms) {
 		}
 		fromVersion = parseVersion(fromVersion);
 		toVersion = parseVersion(toVersion);
-		var version, transformationCode;
-		var tasks = {};
+		let version, transformationCode;
+		const tasks = {};
 		if (fromVersion < toVersion) {
 			for (version = fromVersion; version < toVersion; version++) {
 				transformationCode = 'V' + version + 'toV' + (version + 1);
@@ -118,7 +118,7 @@ module.exports = function(transforms) {
 	}
 
 	function createCheckCompatibilityTask(id, _version, _transformationCode, mongo, options) {
-		var checkCompatibility = transforms['v' + _version][_transformationCode].checkCompatibility;
+		const checkCompatibility = transforms['v' + _version][_transformationCode].checkCompatibility;
 		if (!checkCompatibility) {
 			return function(cb) {cb();};
 		}

@@ -1,4 +1,4 @@
-var entityCheckingCompatibility = {
+const entityCheckingCompatibility = {
 	v2: {
 		V1toV2: {
 			transform: function(data, preparedData, options) {
@@ -19,5 +19,5 @@ var entityCheckingCompatibility = {
 	}
 };
 
-var transformalot = require('../../../sir-transformalot');
+const transformalot = require('../../../sir-transformalot');
 module.exports = transformalot(entityCheckingCompatibility);
