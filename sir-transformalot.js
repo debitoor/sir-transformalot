@@ -129,8 +129,8 @@ module.exports = function(transforms) {
 	}
 
 	return {
-		transformObject: transformObject,
-		getTransformStream: getTransformStream,
-		checkCompatibility: checkCompatibility
+		transformObject,
+		getTransformStream,
+		checkCompatibility
 	};
 };
