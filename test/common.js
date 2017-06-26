@@ -67,7 +67,15 @@ global.getHttpFunction = function (methodType, headers) {
 				global.responseReturned = null;
 				return callback(err);
 			}
-			expect(resp.statusCode, {body: resp.body, stack: '\n\n' + location + '\n\n'}).to.equal(statusCode);
+			try {
+				expect({
+					statusCode: resp.statusCode,
+					body: resp.body
+				}).to.containSubset({statusCode});
+			} catch(ex) {
+				location && (ex.stack = location);
+				return callback(ex);
+			}
 			global.responseReturned = resp;
 			global.bodyReturned = resp.body;
 			return successCallback(resp);

@@ -62,32 +62,38 @@ module.exports = function(transforms) {
 	}
 
 	function _prepareTransform(id, fromVersion, toVersion, mongo, options, callback) {
+		const tasks = _createTasksForVersions(
+			fromVersion,
+			toVersion,
+			(version, transformationCode) => createPrepareTransformTask(id, version, transformationCode, mongo, options));
+		return async.parallel(tasks, callback);
+	}
+
+	function _createTasksForVersions(fromVersion, toVersion, createTaskForVersion) {
 		let version, transformationCode;
 		const tasks = {};
 		if (fromVersion < toVersion) {
 			for (version = fromVersion; version < toVersion; version++) {
 				transformationCode = 'V' + version + 'toV' + (version + 1);
-				tasks[transformationCode] = createPrepareTransformTask(id, version + 1, transformationCode, mongo, options);
+				tasks[transformationCode] = createTaskForVersion(version + 1, transformationCode);
 			}
-			async.parallel(tasks, callback);
 		} else if (fromVersion > toVersion) {
 			for (version = fromVersion; version > toVersion; version--) {
 				transformationCode = 'V' + version + 'toV' + (version - 1);
-				tasks[transformationCode] = createPrepareTransformTask(id, version, transformationCode, mongo, options);
+				tasks[transformationCode] = createTaskForVersion(version, transformationCode);
 			}
-			async.parallel(tasks, callback);
-		} else {
-			callback();
 		}
+		return tasks;
 	}
 
 	function createPrepareTransformTask(id, _version, _transformationCode, mongo, options) {
-		let prepareTransform = transforms['v' + _version][_transformationCode].prepareTransform;
+		const prepareTransform = transforms['v' + _version][_transformationCode].prepareTransform;
+		if (!prepareTransform) {
+			return noopTask;
+		}
 		if (options) {
-			prepareTransform = prepareTransform || function (id, mongo, options, cb) {cb();};
 			return prepareTransform.bind(null, id, mongo, options);
 		}
-		prepareTransform = prepareTransform || function (id, mongo, cb) {cb();};
 		return prepareTransform.bind(null, id, mongo);
 	}
 
@@ -98,34 +104,26 @@ module.exports = function(transforms) {
 		}
 		fromVersion = parseVersion(fromVersion);
 		toVersion = parseVersion(toVersion);
-		let version, transformationCode;
-		const tasks = {};
-		if (fromVersion < toVersion) {
-			for (version = fromVersion; version < toVersion; version++) {
-				transformationCode = 'V' + version + 'toV' + (version + 1);
-				tasks[transformationCode] = createCheckCompatibilityTask(id, version + 1, transformationCode, mongo, options);
-			}
-			async.parallel(tasks, callback);
-		} else if (fromVersion > toVersion) {
-			for (version = fromVersion; version > toVersion; version--) {
-				transformationCode = 'V' + version + 'toV' + (version - 1);
-				tasks[transformationCode] = createCheckCompatibilityTask(id, version, transformationCode, mongo, options);
-			}
-			async.parallel(tasks, callback);
-		} else {
-			callback();
-		}
+		const tasks = _createTasksForVersions(
+			fromVersion,
+			toVersion,
+			(version, transformationCode) => createCheckCompatibilityTask(id, version, transformationCode, mongo, options));
+		return async.parallel(tasks, callback);
 	}
 
 	function createCheckCompatibilityTask(id, _version, _transformationCode, mongo, options) {
 		const checkCompatibility = transforms['v' + _version][_transformationCode].checkCompatibility;
 		if (!checkCompatibility) {
-			return function(cb) {cb();};
+			return noopTask;
 		}
 		if (options) {
 			return checkCompatibility.bind(null, id, mongo, options);
 		}
 		return checkCompatibility.bind(null, id, mongo);
+	}
+
+	function noopTask(cb) {
+		cb();
 	}
 
 	return {
