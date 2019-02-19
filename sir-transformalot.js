@@ -28,6 +28,12 @@ module.exports = function(transforms) {
 			callback = options;
 			options = null;
 		}
+		if (!fromVersion) {
+			return callback(new Error('fromVersion is missing in transformObject'));
+		}
+		if (!toVersion) {
+			return callback(new Error('toVersion is missing in transformObject'));
+		}
 		fromVersion = parseVersion(fromVersion);
 		toVersion = parseVersion(toVersion);
 		_prepareTransform([id], fromVersion, toVersion, mongo, options, function(err, preparedData) {
@@ -43,19 +49,31 @@ module.exports = function(transforms) {
 	}
 
 	function getTransformStream(fromVersion, toVersion, mongo, options) {
-		fromVersion = parseVersion(fromVersion);
-		toVersion = parseVersion(toVersion);
+		let parsedFromVersion, parsedToVersion;
 		let preparedDataSets = null;
 		return through2.obj(function(obj, encoding, callback){
+			if (!parsedFromVersion) {
+				if (!fromVersion) {
+					return callback(new Error('fromVersion is missing in getTransformStream'));
+				}
+				parsedFromVersion = parseVersion(fromVersion);
+			}
+			if (!parsedToVersion) {
+				if (!toVersion) {
+					return callback(new Error('toVersion is missing in getTransformStream'));
+				}
+				parsedToVersion = parseVersion(toVersion);
+			}
+
 			const through = this;
 			if(!preparedDataSets) {
-				_prepareTransform(null, fromVersion, toVersion, mongo, options, function(err, _preparedDataSets){
+				_prepareTransform(null, parsedFromVersion, parsedToVersion, mongo, options, function(err, _preparedDataSets){
 					preparedDataSets = _preparedDataSets;
-					through.push(_transformReadyData(obj, fromVersion, toVersion, preparedDataSets, options));
+					through.push(_transformReadyData(obj, parsedFromVersion, parsedToVersion, preparedDataSets, options));
 					callback();
 				});
 			} else {
-				through.push(_transformReadyData(obj, fromVersion, toVersion, preparedDataSets, options));
+				through.push(_transformReadyData(obj, parsedFromVersion, parsedToVersion, preparedDataSets, options));
 				callback();
 			}
 		});
@@ -101,6 +119,12 @@ module.exports = function(transforms) {
 		if (typeof options === 'function') {
 			callback = options;
 			options = null;
+		}
+		if (!fromVersion) {
+			return callback(new Error('fromVersion is missing in checkCompatibility'));
+		}
+		if (!toVersion) {
+			return callback(new Error('toVersion is missing in checkCompatibility'));
 		}
 		fromVersion = parseVersion(fromVersion);
 		toVersion = parseVersion(toVersion);
