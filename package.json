@@ -1,5 +1,5 @@
 {
-  "name": "sir-transformalot",
+  "name": "@debitoor/sir-transformalot",
   "version": "1.4.1",
   "description": "Transform data between versions",
   "main": "sir-transformalot.js",
