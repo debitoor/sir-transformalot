@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "async": "2.1.2",
-    "lodash": "4.16.4",
+    "lodash": "4.17.19",
     "through2": "2.0.1"
   },
   "files": [
