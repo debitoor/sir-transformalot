@@ -1,0 +1,22 @@
+name: Run Tests
+on:
+  pull_request:
+    branches:
+      - master
+      - main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: debitoor/nodejs-action/npm-install@v1
+        with:
+          npmrc: ${{ secrets.NPMRC }}
+      - name: Test
+        run: npm test
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          files: "*.xml"
+          comment_mode: off
